@@ -32,6 +32,12 @@ Order - WebKonveksi
 
                     <form action="/order" method="POST" enctype="multipart/form-data">
 
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+
                         <!-- Nama -->
                         <div class="mb-4">
 
@@ -54,6 +60,10 @@ Order - WebKonveksi
                             <input type="text" name="whatsapp" class="form-control form-control-lg"
                                 placeholder="08xxxxxxxxxx" required>
 
+                            <div class="form-text">
+                                Nomor ini dipakai admin untuk konfirmasi pesanan.
+                            </div>
+
                         </div>
 
                         <!-- Email -->
@@ -64,7 +74,11 @@ Order - WebKonveksi
                             </label>
 
                             <input type="email" name="email" class="form-control form-control-lg"
-                                placeholder="Masukkan email aktif" required>
+                                placeholder="Masukkan email aktif (untuk struk nota)" required>
+
+                            <div class="form-text">
+                                Struk nota dikirim ke email ini setelah order disetujui admin.
+                            </div>
 
                         </div>
 
@@ -297,6 +311,14 @@ Order - WebKonveksi
                             <textarea name="catatan" class="form-control" rows="5"
                                 placeholder="Tambahkan detail pesanan..."></textarea>
 
+                        </div>
+
+                        <!-- Honeypot: jangan diisi, hanya untuk bot -->
+                        <div aria-hidden="true"
+                            style="position:absolute; left:-9999px; top:-9999px;">
+                            <label for="website">Website</label>
+                            <input type="text" id="website" name="website"
+                                tabindex="-1" autocomplete="off">
                         </div>
 
                         <!-- Button -->

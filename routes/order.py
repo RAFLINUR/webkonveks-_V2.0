@@ -17,13 +17,14 @@ from bson import ObjectId
 
 from flask_mail import Message
 
-from extensions import mail
-
-import random
+import re
 import os
 
 # Database
 from models.database import mongo
+
+# Mail (pengiriman struk nota)
+from extensions import mail
 
 order_bp = Blueprint(
     'order',
@@ -52,18 +53,69 @@ def allowed_file(filename):
            )[1].lower() in ALLOWED_EXTENSIONS
 
 # =========================
-# GENERATE OTP
+# NORMALISASI NOMOR WHATSAPP
+# 0812xxx -> 62812xxx (dipakai untuk rate limit per nomor)
 # =========================
-def generate_otp():
+def normalize_phone(phone):
 
-    return str(
+    p = re.sub(
+        r"\D",
+        "",
+        phone or ""
+    )
 
-        random.randint(
-            100000,
-            999999
+    if p.startswith("62"):
+
+        return p
+
+    if p.startswith("0"):
+
+        return "62" + p[1:]
+
+    if p.startswith("8"):
+
+        return "62" + p
+
+    return p
+
+# =========================
+# KIRIM STRUK NOTA VIA EMAIL
+# Dikirim otomatis setelah admin menyetujui order (approve)
+# =========================
+def send_struk_email(order):
+
+    email = (
+        order.get("email")
+        or ""
+    ).strip()
+
+    if not email:
+
+        raise Exception(
+            "Email customer kosong, struk tidak bisa dikirim."
         )
 
+    html = render_template(
+
+        "email/struk.html",
+
+        order=order
+
     )
+
+    msg = Message(
+
+        f"Struk Nota {order.get('kode_order')} - WebKonveksi",
+
+        recipients=[email]
+
+    )
+
+    msg.html = html
+
+    mail.send(msg)
+
+    return True
 
 # =========================
 # ACTIVITY LOG
@@ -123,7 +175,111 @@ def order():
 
         whatsapp = request.form.get(
             "whatsapp"
-        )
+        ) or ""
+
+        # =========================
+        # VALIDASI WHATSAPP (SEBELUM SIMPAN ORDER)
+        # Nomor WhatsApp dipakai untuk mengirim kode OTP,
+        # jadi wajib ada sebelum order dibuat.
+        # Email hanya disimpan opsional, tidak dipakai untuk OTP.
+        # =========================
+
+        if not whatsapp:
+
+            return render_template(
+
+                "order.html",
+
+                produk_pilihan=produk_pilihan,
+
+                error="Nomor WhatsApp wajib diisi untuk menerima kode OTP."
+
+            )
+
+        if not email:
+
+            return render_template(
+
+                "order.html",
+
+                produk_pilihan=produk_pilihan,
+
+                error="Email wajib diisi untuk pengiriman struk nota."
+
+            )
+
+        # =========================
+        # HONEYPOT ANTI BOT
+        # Field tersembunyi di form.
+        # Manusia tidak pernah mengisi field ini.
+        # =========================
+
+        if request.form.get("website"):
+
+            return render_template(
+
+                "order.html",
+
+                produk_pilihan=produk_pilihan,
+
+                error="Pemesanan gagal. Silakan coba lagi."
+
+            )
+
+        # =========================
+        # RATE LIMIT ANTI ASAL ORDER
+        # 1 nomor WhatsApp = maksimal 1 order per 24 jam
+        # 1 IP = maksimal 3 order per jam
+        # =========================
+
+        now = datetime.now()
+
+        whatsapp_norm = normalize_phone(whatsapp)
+
+        duplikat_nomor = mongo.db.orders.find_one({
+
+            "whatsapp_norm": whatsapp_norm,
+
+            "created_at": {
+                "$gte": now - timedelta(hours=24)
+            }
+
+        })
+
+        if duplikat_nomor:
+
+            return render_template(
+
+                "order.html",
+
+                produk_pilihan=produk_pilihan,
+
+                error="Nomor WhatsApp ini baru membuat pesanan "
+                      "dalam 24 jam terakhir. "
+                      "Silakan hubungi admin untuk pesanan tambahan."
+
+            )
+
+        if mongo.db.orders.count_documents({
+
+            "ip_address": request.remote_addr,
+
+            "created_at": {
+                "$gte": now - timedelta(hours=1)
+            }
+
+        }) >= 3:
+
+            return render_template(
+
+                "order.html",
+
+                produk_pilihan=produk_pilihan,
+
+                error="Terlalu banyak pesanan dari jaringan Anda. "
+                      "Silakan coba lagi dalam satu jam."
+
+            )
 
         produk = request.form.get(
             "produk"
@@ -384,23 +540,9 @@ def order():
         kode_order = generate_order_code()
 
         # =========================
-        # OTP
-        # =========================
-
-        otp = generate_otp()
-
-        otp_expired = (
-
-            datetime.now()
-
-            +
-
-            timedelta(minutes=5)
-
-        )
-
-        # =========================
         # SAVE ORDER
+        # (Tanpa OTP: order langsung masuk daftar admin,
+        #  proteksi anti spam ditangani rate limit + honeypot)
         # =========================
 
         mongo.db.orders.insert_one({
@@ -412,6 +554,10 @@ def order():
             "email": email,
 
             "whatsapp": whatsapp,
+
+            "whatsapp_norm": whatsapp_norm,
+
+            "ip_address": request.remote_addr,
 
             "produk": produk,
 
@@ -427,45 +573,13 @@ def order():
 
             "status": "pending",
 
-            "otp": otp,
+            "is_verified": True,
 
-            "otp_expired": otp_expired,
-
-            "is_verified": False,
+            "struk_sent": False,
 
             "created_at": datetime.now()
 
         })
-
-        # =========================
-        # SEND OTP EMAIL
-        # =========================
-
-        if not email:
-
-            return "Email wajib diisi"
-
-        msg = Message(
-
-            "OTP Verifikasi Order",
-
-            sender="EMAIL_GMAIL_KAMU",
-
-            recipients=[email]
-
-        )
-
-        msg.body = f"""
-
-Kode OTP anda:
-
-{otp}
-
-OTP berlaku selama 5 menit.
-
-"""
-
-        mail.send(msg)
 
         # =========================
         # SAVE LOG
@@ -480,14 +594,14 @@ OTP berlaku selama 5 menit.
         )
 
         # =========================
-        # REDIRECT OTP
+        # REDIRECT SUKSES
         # =========================
 
         return redirect(
 
             url_for(
 
-                "order.verify_page",
+                "order.sukses",
 
                 kode_order=kode_order
 
@@ -500,102 +614,6 @@ OTP berlaku selama 5 menit.
         "order.html",
 
         produk_pilihan=produk_pilihan
-
-    )
-
-# =========================
-# HALAMAN OTP
-# =========================
-@order_bp.route(
-    "/verify/<kode_order>"
-)
-def verify_page(kode_order):
-
-    return render_template(
-
-        "verify_otp.html",
-
-        kode_order=kode_order
-
-    )
-
-# =========================
-# VERIFY OTP
-# =========================
-@order_bp.route(
-    "/verify-otp",
-    methods=["POST"]
-)
-def verify_otp():
-
-    kode_order = request.form.get(
-        "kode_order"
-    )
-
-    otp_input = request.form.get(
-        "otp"
-    )
-
-    order = mongo.db.orders.find_one({
-
-        "kode_order": kode_order
-
-    })
-
-    # ORDER TIDAK ADA
-    if not order:
-
-        return "Order tidak ditemukan"
-
-    # OTP EXPIRED
-    if datetime.now() > order[
-        "otp_expired"
-    ]:
-
-        return "OTP expired"
-
-    # OTP SALAH
-    if otp_input != order[
-        "otp"
-    ]:
-
-        return "OTP salah"
-
-    # VERIFIED
-    mongo.db.orders.update_one(
-
-        {
-            "kode_order": kode_order
-        },
-
-        {
-            "$set": {
-
-                "is_verified": True
-
-            }
-        }
-
-    )
-
-    # SAVE LOG
-    save_log(
-
-        f"OTP verified: {kode_order}",
-
-        request.remote_addr
-
-    )
-
-    return redirect(
-
-        url_for(
-
-            "order.sukses",
-
-            kode_order=kode_order
-
-        )
 
     )
 
@@ -677,6 +695,26 @@ def api_orders():
                 "harga",
                 0
             ),
+
+            "email":
+                order.get(
+                    "email",
+                    ""
+                ),
+
+            "struk_sent":
+                order.get(
+                    "struk_sent",
+                    False
+                ),
+
+            "approved_at":
+                str(
+                    order.get(
+                        "approved_at",
+                        ""
+                    )
+                ),
 
             "created_at": str(
 
@@ -830,6 +868,262 @@ def update_status(id):
 
         "message":
             "Status berhasil diupdate"
+
+    })
+
+
+# =========================
+# STATUS YANG SUDAH DISETUJUI
+# =========================
+APPROVED_STATUSES = {
+    "approved",
+    "printing",
+    "sewing",
+    "done"
+}
+
+# =========================
+# APPROVE ORDER (ADMIN)
+# Setujui order -> status "APPROVED"
+# + kirim struk nota ke email customer
+# =========================
+@order_bp.route(
+    "/api/orders/<id>/approve",
+    methods=["POST"]
+)
+def approve_order(id):
+
+    try:
+
+        order = mongo.db.orders.find_one({
+            "_id": ObjectId(id)
+        })
+
+    except Exception:
+
+        order = None
+
+    if not order:
+
+        return jsonify({
+
+            "success": False,
+
+            "message": "Order tidak ditemukan"
+
+        }), 404
+
+    if not order.get("is_verified"):
+
+        return jsonify({
+
+            "success": False,
+
+            "message": "Order belum diverifikasi OTP"
+
+        }), 400
+
+    # Sudah pernah disetujui, tidak kirim struk dua kali
+    if (
+
+        order.get(
+            "status",
+            ""
+        ).lower() in APPROVED_STATUSES
+
+    ):
+
+        return jsonify({
+
+            "success": True,
+
+            "already": True,
+
+            "status": order.get("status"),
+
+            "struk_sent": order.get(
+                "struk_sent",
+                False
+            ),
+
+            "message":
+                "Order sudah disetujui sebelumnya"
+
+        })
+
+    mongo.db.orders.update_one(
+
+        {
+            "_id": order["_id"]
+        },
+
+        {
+            "$set": {
+                "status": "APPROVED",
+                "approved_at": datetime.now(),
+                "struk_sent": False
+            }
+        }
+
+    )
+
+    order["status"] = "APPROVED"
+
+    # =========================
+    # KIRIM STRUK NOTA
+    # =========================
+
+    struk_sent = False
+
+    struk_error = None
+
+    try:
+
+        send_struk_email(order)
+
+        struk_sent = True
+
+    except Exception as e:
+
+        print("GAGAL KIRIM STRUK:", e)
+
+        struk_error = str(e)
+
+    mongo.db.orders.update_one(
+
+        {
+            "_id": order["_id"]
+        },
+
+        {
+            "$set": {
+                "struk_sent": struk_sent
+            }
+        }
+
+    )
+
+    save_log(
+
+        f"Approve order: {order.get('kode_order')} "
+        f"(struk: {'terkirim' if struk_sent else 'gagal'})",
+
+        request.remote_addr
+
+    )
+
+    return jsonify({
+
+        "success": True,
+
+        "status": "APPROVED",
+
+        "struk_sent": struk_sent,
+
+        "struk_error": struk_error,
+
+        "message":
+            "Order disetujui. Struk nota dikirim ke email."
+            if struk_sent
+            else
+            "Order disetujui, tetapi struk gagal dikirim ke email. "
+            "Tekan Kirim Ulang Struk."
+
+    })
+
+
+# =========================
+# KIRIM ULANG STRUK NOTA
+# =========================
+@order_bp.route(
+    "/api/orders/<id>/resend-struk",
+    methods=["POST"]
+)
+def resend_struk(id):
+
+    try:
+
+        order = mongo.db.orders.find_one({
+            "_id": ObjectId(id)
+        })
+
+    except Exception:
+
+        order = None
+
+    if not order:
+
+        return jsonify({
+
+            "success": False,
+
+            "message": "Order tidak ditemukan"
+
+        }), 404
+
+    if (
+
+        order.get(
+            "status",
+            ""
+        ).lower() not in APPROVED_STATUSES
+
+    ):
+
+        return jsonify({
+
+            "success": False,
+
+            "message": "Order belum disetujui admin"
+
+        }), 400
+
+    try:
+
+        send_struk_email(order)
+
+    except Exception as e:
+
+        print("GAGAL KIRIM ULANG STRUK:", e)
+
+        return jsonify({
+
+            "success": False,
+
+            "message": str(e)
+
+        }), 502
+
+    mongo.db.orders.update_one(
+
+        {
+            "_id": order["_id"]
+        },
+
+        {
+            "$set": {
+                "struk_sent": True
+            }
+        }
+
+    )
+
+    save_log(
+
+        f"Kirim ulang struk: {order.get('kode_order')}",
+
+        request.remote_addr
+
+    )
+
+    return jsonify({
+
+        "success": True,
+
+        "struk_sent": True,
+
+        "message":
+            "Struk nota dikirim ulang ke email customer."
 
     })
 

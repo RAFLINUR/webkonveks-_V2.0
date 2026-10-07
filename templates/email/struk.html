@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3f4f6;padding:24px 0;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:96%;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e5e7eb;">
+
+                    <tr>
+                        <td style="background:#7C3AED;padding:24px 32px;">
+                            <h1 style="margin:0;color:#ffffff;font-size:20px;">WebKonveksi</h1>
+                            <p style="margin:6px 0 0;color:#ddd6fe;font-size:13px;">Struk Nota Order</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:28px 32px;">
+
+                            <h2 style="margin:0 0 4px;font-size:22px;color:#111827;">Struk Nota</h2>
+                            <p style="margin:0 0 20px;color:#6b7280;font-size:14px;">
+                                Order Anda telah disetujui dan siap diproses.
+                            </p>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:12px;margin-bottom:20px;">
+                                <tr>
+                                    <td style="padding:14px 16px;font-size:13px;color:#6b7280;">Kode Order</td>
+                                    <td align="right" style="padding:14px 16px;font-size:14px;font-weight:bold;color:#111827;">
+                                        {{ order.kode_order }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:14px 16px;font-size:13px;color:#6b7280;border-top:1px solid #e5e7eb;">Tanggal</td>
+                                    <td align="right" style="padding:14px 16px;font-size:14px;color:#111827;border-top:1px solid #e5e7eb;">
+                                        {{ order.created_at.strftime('%d %B %Y, %H:%M') if order.created_at else '-' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:14px 16px;font-size:13px;color:#6b7280;border-top:1px solid #e5e7eb;">Atas Nama</td>
+                                    <td align="right" style="padding:14px 16px;font-size:14px;color:#111827;border-top:1px solid #e5e7eb;">
+                                        {{ order.nama_customer }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:14px 16px;font-size:13px;color:#6b7280;border-top:1px solid #e5e7eb;">WhatsApp</td>
+                                    <td align="right" style="padding:14px 16px;font-size:14px;color:#111827;border-top:1px solid #e5e7eb;">
+                                        {{ order.whatsapp or '-' }}
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <h3 style="margin:0 0 10px;font-size:15px;color:#111827;">Rincian Pesanan</h3>
+
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e5e7eb;border-radius:12px;margin-bottom:20px;">
+                                <tr>
+                                    <th align="left" style="padding:12px 16px;background:#f3f4f6;font-size:13px;color:#374151;">Produk</th>
+                                    <th align="right" style="padding:12px 16px;background:#f3f4f6;font-size:13px;color:#374151;">Jumlah</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding:12px 16px;font-size:14px;color:#111827;">
+                                        {{ order.produk }}
+                                        {% if order.variasi %}
+                                        <div style="margin-top:6px;font-size:12px;color:#6b7280;">
+                                            {% for v in order.variasi %}
+                                            {% if v.qty %}
+                                            <div>- {{ v.size }} {{ v.jenis }} : {{ v.qty }} pcs</div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                    <td align="right" style="padding:12px 16px;font-size:14px;color:#111827;">
+                                        {{ order.jumlah }} pcs
+                                    </td>
+                                </tr>
+                                {% if order.catatan %}
+                                <tr>
+                                    <td colspan="2" style="padding:12px 16px;font-size:13px;color:#6b7280;border-top:1px solid #e5e7eb;">
+                                        Catatan: {{ order.catatan }}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td align="right" style="padding:16px;font-size:14px;font-weight:bold;color:#111827;border-top:2px solid #e5e7eb;">TOTAL</td>
+                                    <td align="right" style="padding:16px;font-size:18px;font-weight:bold;color:#7C3AED;border-top:2px solid #e5e7eb;">
+                                        Rp {{ '{:,}'.format(order.harga or 0).replace(',', '.') }}
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
+                                Struk ini dikirim otomatis setelah admin menyetujui pesanan Anda.
+                                Simpan sebagai bukti pemesanan. Terima kasih telah memesan di WebKonveksi.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="background:#f9fafb;padding:16px 32px;border-top:1px solid #e5e7eb;">
+                            <p style="margin:0;font-size:12px;color:#9ca3af;">
+                                &copy; WebKonveksi &mdash; Konveksi Sablon & Bordir
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
