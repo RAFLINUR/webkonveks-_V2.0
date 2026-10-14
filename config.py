@@ -37,9 +37,9 @@ class Config:
     #   UPLOAD_FOLDER=/var/data/uploads
     #   REMOVED_FOLDER=/var/data/removed
     # =========================
-    _DEFAULT_UPLOAD = "/tmp/uploads" if IS_VERCEL else "static/uploads"
+    _DEFAULT_UPLOAD = "/tmp/uploads" if IS_VERCEL else "public/static/uploads"
 
-    _DEFAULT_REMOVED = "/tmp/removed" if IS_VERCEL else "static/removed"
+    _DEFAULT_REMOVED = "/tmp/removed" if IS_VERCEL else "public/static/removed"
 
     UPLOAD_FOLDER = os.getenv(
         "UPLOAD_FOLDER"

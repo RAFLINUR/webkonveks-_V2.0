@@ -26,7 +26,11 @@ from routes.cart import cart_bp, inject_cart
 # upload desain
 from flask import send_from_directory
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder="public/static",
+    static_url_path="/static",
+)
 
 app.config.from_object(Config)
 
