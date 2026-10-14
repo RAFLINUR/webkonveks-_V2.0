@@ -1,8 +1,14 @@
+import os
+
+from dotenv import load_dotenv
+
 from pymongo import MongoClient
 
-print("Mulai koneksi...")
+load_dotenv()
 
-uri = "mongodb+srv://konveksi-user:admin123@cluster0.06x3naq.mongodb.net/konveksi_db?retryWrites=true&w=majority&appName=Cluster0"
+uri = os.getenv("MONGO_URI")
+
+print("Mulai koneksi...")
 
 client = MongoClient(uri)
 
