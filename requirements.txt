@@ -4,5 +4,6 @@ Flask-Mail==0.10.0
 python-dotenv==1.2.2
 pymongo==4.17.0
 pillow==12.2.0
-rembg==2.0.69
+numpy==2.2.6
+onnxruntime==1.23.2
 gunicorn==23.0.0

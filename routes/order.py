@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 from datetime import timedelta
 
-from rembg import remove
+from utils.bg_remove import remove
 from PIL import Image
 
 from bson import ObjectId

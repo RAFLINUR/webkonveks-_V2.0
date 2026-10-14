@@ -9,7 +9,7 @@ load_dotenv(override=True)
 IS_VERCEL = os.getenv("VERCEL") == "1"
 
 if IS_VERCEL:
-    # Model rembg (u2net) disimpan di /tmp, bukan di ~/.u2net yang read-only.
+    # Model u2net (remove background) disimpan di /tmp, bukan di ~/.u2net yang read-only.
     os.environ.setdefault("U2NET_HOME", "/tmp/.u2net")
 
 class Config:

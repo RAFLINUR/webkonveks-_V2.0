@@ -100,7 +100,7 @@ def save_desain(file, produk):
         try:
 
             from PIL import Image
-            from rembg import remove
+            from utils.bg_remove import remove
 
             input_image = Image.open(file_path)
 
