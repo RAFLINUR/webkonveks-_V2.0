@@ -4,6 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+# Vercel hanya mengizinkan penulisan di /tmp (ephemeral).
+# Deteksi otomatis lewat env VERCEL yang diset platform Vercel.
+IS_VERCEL = os.getenv("VERCEL") == "1"
+
+if IS_VERCEL:
+    # Model rembg (u2net) disimpan di /tmp, bukan di ~/.u2net yang read-only.
+    os.environ.setdefault("U2NET_HOME", "/tmp/.u2net")
+
 class Config:
 
     # =========================
@@ -24,17 +32,22 @@ class Config:
     # =========================
     # PENYIMPANAN FILE DESAIN
     # Secara default memakai folder lokal di static/.
-    # Di Render, arahkan ke persistent disk lewat env, contoh:
+    # Di Vercel otomatis diarahkan ke /tmp (ephemeral).
+    # Di Render bisa diarahkan ke persistent disk lewat env, contoh:
     #   UPLOAD_FOLDER=/var/data/uploads
     #   REMOVED_FOLDER=/var/data/removed
     # =========================
+    _DEFAULT_UPLOAD = "/tmp/uploads" if IS_VERCEL else "static/uploads"
+
+    _DEFAULT_REMOVED = "/tmp/removed" if IS_VERCEL else "static/removed"
+
     UPLOAD_FOLDER = os.getenv(
         "UPLOAD_FOLDER"
-    ) or "static/uploads"
+    ) or _DEFAULT_UPLOAD
 
     REMOVED_FOLDER = os.getenv(
         "REMOVED_FOLDER"
-    ) or "static/removed"
+    ) or _DEFAULT_REMOVED
 
     # =========================
     # FLASK MAIL

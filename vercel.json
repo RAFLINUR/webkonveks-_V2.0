@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 300,
+      "memory": 2048,
+      "includeFiles": "{app.py,config.py,extensions.py,templates/**/*,static/**/*,routes/**/*,models/**/*,utils/**/*}"
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
+  ]
+}
