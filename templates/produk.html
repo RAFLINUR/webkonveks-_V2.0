@@ -6,261 +6,376 @@ Produk - WebKonveksi
 
 {% block content %}
 
-<section class="py-5">
-
+<section class="product-hero">
     <div class="container">
+        <div class="product-hero-inner text-center">
 
-        <!-- Heading -->
-        <div class="text-center mb-5">
-
-            <span class="badge-product mb-3">
+            <span class="badge-product">
                 PRODUK TERBAIK
             </span>
 
-            <h1 class="fw-bold display-5">
+            <h1 class="product-hero-title">
                 Produk Konveksi Premium
             </h1>
 
-            <p class="text-secondary col-lg-7 mx-auto">
+            <p class="product-hero-subtitle">
                 Pilihan produk custom berkualitas tinggi untuk kebutuhan bisnis,
                 komunitas, event, sekolah, hingga perusahaan.
             </p>
 
-        </div>
+            <div class="product-hero-meta">
+                <span class="meta-item">✓ Bahan Premium</span>
+                <span class="meta-divider"></span>
+                <span class="meta-item">✓ Full Custom Design</span>
+                <span class="meta-divider"></span>
+                <span class="meta-item">✓ Pengerjaan Cepat</span>
+            </div>
 
-        <!-- Product Grid -->
+        </div>
+    </div>
+</section>
+
+<section class="pb-5">
+    <div class="container">
+
         <div class="row g-4">
 
-            <!-- KAOS -->
             <div class="col-md-6 col-lg-3">
+                <div class="product-card h-100">
 
-                <div class="custom-card product-card h-100">
+                    <div class="product-thumb">
+                        <span class="popular-badge">Best Seller</span>
+                        <img src="{{ url_for('static', filename='img/BACK Tshirt design.jpeg') }}"
+                             alt="Kaos Sablon"
+                             class="product-image">
+                    </div>
 
-                    <span class="popular-badge">
-                        Best Seller
-                    </span>
+                    <div class="product-body">
+                        <h4 class="product-name">Kaos Sablon</h4>
+                        <div class="price-tag">Mulai Rp65K</div>
 
-                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format&fit=crop"
-                         class="img-fluid rounded-4 mb-4 product-image">
+                        <p class="product-desc">
+                            Kaos custom premium dengan bahan nyaman dan hasil sablon berkualitas tinggi.
+                        </p>
 
-                    <h4 class="fw-bold">
-                        Kaos Sablon
-                    </h4>
+                        <ul class="product-list">
+                            <li>Cotton Combed 30s</li>
+                            <li>Full Custom Design</li>
+                            <li>Sablon Premium</li>
+                            <li>Min. Order 12 pcs</li>
+                            <li>Estimasi 3-5 Hari</li>
+                        </ul>
 
-                    <h5 class="price-tag mb-3">
-                        Mulai Rp65K
-                    </h5>
+                        <a href="/keranjang/tambah?produk=Kaos Sablon" class="btn btn-outline-secondary w-100 mb-2"
+                            style="border-radius:12px;">
+                            Tambah ke Keranjang
+                        </a>
 
-                    <p class="text-secondary">
-                        Kaos custom premium dengan bahan nyaman dan hasil sablon berkualitas tinggi.
-                    </p>
-
-                    <ul class="product-list">
-
-                        <li>✔ Cotton Combed 30s</li>
-                        <li>✔ Full Custom Design</li>
-                        <li>✔ Sablon Premium</li>
-                        <li>✔ Min. Order 12 pcs</li>
-                        <li>✔ Estimasi 3-5 Hari</li>
-
-                    </ul>
-
-                    <a href="/order?produk=Kaos Sablon"
-                       class="btn btn-custom w-100 mt-3">
-
-                        Pesan Sekarang
-
-                    </a>
+                        <a href="/order?produk=Kaos Sablon" class="btn btn-custom w-100 mt-auto">
+                            Pesan Sekarang
+                        </a>
+                    </div>
 
                 </div>
-
             </div>
 
-            <!-- TOTE BAG -->
             <div class="col-md-6 col-lg-3">
+                <div class="product-card h-100">
 
-                <div class="custom-card product-card h-100">
+                    <div class="product-thumb">
+                        <img src="https://i.pinimg.com/1200x/95/8f/a2/958fa2eef069e4336360581a4d4b638b.jpg"
+                             alt="Totebag"
+                             class="product-image">
+                    </div>
 
-                    <img src="https://i.pinimg.com/1200x/95/8f/a2/958fa2eef069e4336360581a4d4b638b.jpg"
-                         class="img-fluid rounded-4 mb-4 product-image">
+                    <div class="product-body">
+                        <h4 class="product-name">Totebag</h4>
+                        <div class="price-tag">Mulai Rp25K</div>
 
-                    <h4 class="fw-bold">
-                        Totebag
-                    </h4>
+                        <p class="product-desc">
+                            Totebag custom modern cocok untuk merchandise dan branding usaha.
+                        </p>
 
-                    <h5 class="price-tag mb-3">
-                        Mulai Rp25K
-                    </h5>
+                        <ul class="product-list">
+                            <li>Bahan Tebal Premium</li>
+                            <li>Full Printing</li>
+                            <li>Design Bebas</li>
+                            <li>Cocok Untuk Event</li>
+                            <li>Estimasi 2-4 Hari</li>
+                        </ul>
 
-                    <p class="text-secondary">
-                        Totebag custom modern cocok untuk merchandise dan branding usaha.
-                    </p>
+                        <a href="/keranjang/tambah?produk=Totebag" class="btn btn-outline-secondary w-100 mb-2"
+                            style="border-radius:12px;">
+                            Tambah ke Keranjang
+                        </a>
 
-                    <ul class="product-list">
-
-                        <li>✔ Bahan Tebal Premium</li>
-                        <li>✔ Full Printing</li>
-                        <li>✔ Design Bebas</li>
-                        <li>✔ Cocok Untuk Event</li>
-                        <li>✔ Estimasi 2-4 Hari</li>
-
-                    </ul>
-
-                    <a href="/order?produk=Totebag"
-                       class="btn btn-custom w-100 mt-3">
-
-                        Pesan Sekarang
-
-                    </a>
+                        <a href="/order?produk=Totebag" class="btn btn-custom w-100 mt-auto">
+                            Pesan Sekarang
+                        </a>
+                    </div>
 
                 </div>
-
             </div>
 
-            <!-- POLO -->
             <div class="col-md-6 col-lg-3">
+                <div class="product-card h-100">
 
-                <div class="custom-card product-card h-100">
+                    <div class="product-thumb">
+                        <img src="https://i.pinimg.com/1200x/68/f1/a5/68f1a52f225fa13bf723e5a7d4b6f4da.jpg"
+                             alt="Polo Bordir"
+                             class="product-image">
+                    </div>
 
-                    <img src="https://i.pinimg.com/1200x/68/f1/a5/68f1a52f225fa13bf723e5a7d4b6f4da.jpg"
-                         class="img-fluid rounded-4 mb-4 product-image">
+                    <div class="product-body">
+                        <h4 class="product-name">Polo Bordir</h4>
+                        <div class="price-tag">Mulai Rp85K</div>
 
-                    <h4 class="fw-bold">
-                        Polo Bordir
-                    </h4>
+                        <p class="product-desc">
+                            Polo shirt elegan dengan bordir premium untuk kantor dan komunitas.
+                        </p>
 
-                    <h5 class="price-tag mb-3">
-                        Mulai Rp85K
-                    </h5>
+                        <ul class="product-list">
+                            <li>Bordir Premium</li>
+                            <li>Bahan Nyaman</li>
+                            <li>Jahitan Rapi</li>
+                            <li>Cocok Untuk Kantor</li>
+                            <li>Estimasi 4-6 Hari</li>
+                        </ul>
 
-                    <p class="text-secondary">
-                        Polo shirt elegan dengan bordir premium untuk kantor dan komunitas.
-                    </p>
+                        <a href="/keranjang/tambah?produk=Polo Bordir" class="btn btn-outline-secondary w-100 mb-2"
+                            style="border-radius:12px;">
+                            Tambah ke Keranjang
+                        </a>
 
-                    <ul class="product-list">
-
-                        <li>✔ Bordir Premium</li>
-                        <li>✔ Bahan Nyaman</li>
-                        <li>✔ Jahitan Rapi</li>
-                        <li>✔ Cocok Untuk Kantor</li>
-                        <li>✔ Estimasi 4-6 Hari</li>
-
-                    </ul>
-
-                    <a href="/order?produk=Polo Bordir"
-                       class="btn btn-custom w-100 mt-3">
-
-                        Pesan Sekarang
-
-                    </a>
+                        <a href="/order?produk=Polo Bordir" class="btn btn-custom w-100 mt-auto">
+                            Pesan Sekarang
+                        </a>
+                    </div>
 
                 </div>
-
             </div>
 
-            <!-- ID CARD -->
             <div class="col-md-6 col-lg-3">
+                <div class="product-card h-100">
 
-                <div class="custom-card product-card h-100">
+                    <div class="product-thumb">
+                        <img src="https://i.pinimg.com/736x/b3/5a/06/b35a066873d9d10b73181afd243caf9d.jpg"
+                             alt="ID Card + Lanyard"
+                             class="product-image">
+                    </div>
 
-                    <img src="https://i.pinimg.com/736x/b3/5a/06/b35a066873d9d10b73181afd243caf9d.jpg"
-                         class="img-fluid rounded-4 mb-4 product-image">
+                    <div class="product-body">
+                        <h4 class="product-name">ID Card + Lanyard</h4>
+                        <div class="price-tag">Mulai Rp15K</div>
 
-                    <h4 class="fw-bold">
-                        ID Card + Lanyard
-                    </h4>
+                        <p class="product-desc">
+                            Paket ID card dan lanyard custom untuk perusahaan dan event.
+                        </p>
 
-                    <h5 class="price-tag mb-3">
-                        Mulai Rp15K
-                    </h5>
+                        <ul class="product-list">
+                            <li>Full Color Printing</li>
+                            <li>Lanyard Custom</li>
+                            <li>Design Eksklusif</li>
+                            <li>Cocok Untuk Event</li>
+                            <li>Estimasi 2-3 Hari</li>
+                        </ul>
 
-                    <p class="text-secondary">
-                        Paket ID card dan lanyard custom untuk perusahaan dan event.
-                    </p>
+                        <a href="/keranjang/tambah?produk=ID Card + Lanyard" class="btn btn-outline-secondary w-100 mb-2"
+                            style="border-radius:12px;">
+                            Tambah ke Keranjang
+                        </a>
 
-                    <ul class="product-list">
-
-                        <li>✔ Full Color Printing</li>
-                        <li>✔ Lanyard Custom</li>
-                        <li>✔ Design Eksklusif</li>
-                        <li>✔ Cocok Untuk Event</li>
-                        <li>✔ Estimasi 2-3 Hari</li>
-
-                    </ul>
-
-                    <a href="/order?produk=ID Card + Lanyard"
-                       class="btn btn-custom w-100 mt-3">
-
-                        Pesan Sekarang
-
-                    </a>
+                        <a href="/order?produk=ID Card + Lanyard" class="btn btn-custom w-100 mt-auto">
+                            Pesan Sekarang
+                        </a>
+                    </div>
 
                 </div>
-
             </div>
 
         </div>
 
     </div>
-
 </section>
 
 <style>
 
+    :root{
+        --brand: #7C3AED;
+        --brand-dark: #6D28D9;
+        --brand-soft: #EDE9FE;
+        --ink: #1F2937;
+        --muted: #6B7280;
+    }
+
+    .product-hero{
+        padding: 80px 0 50px;
+    }
+
+    .product-hero-title{
+        font-weight: 700;
+        font-size: clamp(2rem, 4vw, 3rem);
+        color: var(--ink);
+        letter-spacing: -0.5px;
+        margin-bottom: 18px;
+    }
+
+    .product-hero-subtitle{
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 620px;
+        margin: 0 auto 26px;
+    }
+
+    .badge-product{
+        background: var(--brand-soft);
+        color: var(--brand);
+        padding: 8px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .product-hero-meta{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .meta-divider{
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #D1D5DB;
+    }
+
     .product-card{
-        transition: 0.3s ease;
-        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 22px;
         overflow: hidden;
+        box-shadow: 0 12px 30px rgba(17, 24, 39, 0.06);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .product-card:hover{
         transform: translateY(-8px);
+        box-shadow: 0 22px 45px rgba(124, 58, 237, 0.16);
+    }
+
+    .product-thumb{
+        position: relative;
+        overflow: hidden;
     }
 
     .product-image{
-        height: 220px;
         width: 100%;
+        height: 210px;
         object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image{
+        transform: scale(1.06);
+    }
+
+    .popular-badge{
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        background: var(--brand);
+        color: #fff;
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        z-index: 2;
+        box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+    }
+
+    .product-body{
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 22px;
+    }
+
+    .product-name{
+        font-weight: 700;
+        font-size: 19px;
+        color: var(--ink);
+        margin-bottom: 6px;
+    }
+
+    .price-tag{
+        color: var(--brand);
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+
+    .product-desc{
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+        margin-bottom: 18px;
     }
 
     .product-list{
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: 0 0 22px;
     }
 
     .product-list li{
-        margin-bottom: 10px;
+        position: relative;
+        padding-left: 26px;
+        margin-bottom: 9px;
         color: #4B5563;
-        font-size: 14px;
+        font-size: 13.5px;
+        line-height: 1.4;
     }
 
-    .price-tag{
-        color: #7C3AED;
+    .product-list li::before{
+        content: "✓";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--brand);
+        background: var(--brand-soft);
+        border-radius: 50%;
+        font-size: 10px;
         font-weight: 700;
     }
 
-    .badge-product{
-        background: #EDE9FE;
-        color: #7C3AED;
-        padding: 10px 20px;
-        border-radius: 999px;
+    .product-body .btn-custom{
+        border-radius: 12px;
+        padding: 12px 18px;
         font-size: 14px;
-        font-weight: 600;
-        display: inline-block;
     }
 
-    .popular-badge{
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: #7C3AED;
-        color: white;
-        padding: 6px 14px;
-        border-radius: 999px;
-        font-size: 12px;
-        font-weight: 600;
-        z-index: 10;
+    @media (max-width: 768px){
+
+        .product-hero{
+            padding: 55px 0 35px;
+        }
+
     }
 
 </style>

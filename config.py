@@ -7,6 +7,14 @@ load_dotenv(override=True)
 class Config:
 
     # =========================
+    # FLASK SESSION
+    # Dipakai untuk menyimpan keranjang belanja (session-based).
+    # =========================
+    SECRET_KEY = os.getenv(
+        "SECRET_KEY"
+    ) or "webkonveksi-dev-secret-key"
+
+    # =========================
     # MONGODB
     # =========================
     MONGO_URI = os.getenv(

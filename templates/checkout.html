@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Checkout - WebKonveksi
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <h1 class="fw-bold">
+                Checkout
+            </h1>
+
+            <p class="text-secondary">
+                Lengkapi data pengiriman dan konfirmasi pesanan Anda.
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-lg-8">
+
+                <div class="custom-card">
+
+                    <form action="/checkout" method="POST">
+
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Nama Customer
+                            </label>
+                            <input type="text" name="nama" class="form-control form-control-lg"
+                                placeholder="Masukkan nama lengkap" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Nomor WhatsApp
+                            </label>
+                            <input type="text" name="whatsapp" class="form-control form-control-lg"
+                                placeholder="08xxxxxxxxxx" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Email
+                            </label>
+                            <input type="email" name="email" class="form-control form-control-lg"
+                                placeholder="Masukkan email aktif (untuk struk nota)" required>
+                            <div class="form-text">
+                                Struk nota dikirim ke email ini setelah pembayaran diverifikasi admin.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Alamat Pengiriman
+                            </label>
+                            <textarea name="alamat" class="form-control" rows="3"
+                                placeholder="Alamat lengkap pengiriman (opsional)"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                Catatan Tambahan
+                            </label>
+                            <textarea name="catatan" class="form-control" rows="3"
+                                placeholder="Tambahkan detail pesanan..."></textarea>
+                        </div>
+
+                        <!-- Honeypot -->
+                        <div aria-hidden="true" style="position:absolute; left:-9999px; top:-9999px;">
+                            <label for="website">Website</label>
+                            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-custom btn-lg">
+                                Buat Pesanan & Bayar
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4">
+
+                <div class="custom-card sticky-top" style="top:100px;">
+
+                    <h4 class="fw-bold mb-3">
+                        Pesanan Anda
+                    </h4>
+
+                    {% for item in cart %}
+
+                    <div class="d-flex justify-content-between mb-2 small">
+
+                        <span>
+                            {{ item.produk }} ({{ item.qty }} pcs)
+                        </span>
+
+                        <span>
+                            {{ "Rp {:,.0f}".format(item.harga).replace(",", ".") }}
+                        </span>
+
+                    </div>
+
+                    {% endfor %}
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>Total</span>
+
+                        <span class="fw-bold text-success">
+                            {{ "Rp {:,.0f}".format(total).replace(",", ".") }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<style>
+    .form-control {
+        border-radius: 14px;
+        border: 1px solid #E5E7EB;
+        padding: 14px;
+    }
+
+    .form-control:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 0 0 0.15rem rgba(124, 58, 237, 0.2);
+    }
+
+    textarea {
+        resize: none;
+    }
+</style>
+
+{% endblock %}

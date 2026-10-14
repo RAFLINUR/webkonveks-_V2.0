@@ -20,6 +20,9 @@ from routes.order import order_bp
 from routes.tracking import tracking_bp
 from routes.ai import ai_bp
 
+# Keranjang & pembayaran
+from routes.cart import cart_bp, inject_cart
+
 # upload desain
 from flask import send_from_directory
 
@@ -47,6 +50,12 @@ app.register_blueprint(tracking_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(stok_bp)
 app.register_blueprint(ai_bp)
+app.register_blueprint(cart_bp)
+
+# Inject jumlah item keranjang ke semua template (badge navbar)
+@app.context_processor
+def _inject_cart():
+    return inject_cart()
 
 @app.route("/test-db")
 def test_db():

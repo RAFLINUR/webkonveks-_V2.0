@@ -33,16 +33,37 @@ def tracking_result():
 
     kode_order = request.form.get("kode_order")
 
-    order = mongo.db.orders.find_one({
+    # Ambil order yang sudah diverifikasi & paling baru.
+    # Kalau ada kode_order duplikat (data lama), ini memastikan yang
+    # tampil adalah order yang benar-benar aktif/terbaru.
+    order = mongo.db.orders.find_one(
 
-        "kode_order":
-            kode_order
+        {
+            "kode_order": kode_order,
+            "is_verified": True
+        },
 
-    })
+        sort=[("_id", -1)]
+
+    ) or mongo.db.orders.find_one(
+
+        {
+            "kode_order": kode_order
+        },
+
+        sort=[("_id", -1)]
+
+    )
 
     if not order:
 
-        return "Order tidak ditemukan"
+        return render_template(
+
+            "tracking_search.html",
+
+            error="Kode order tidak ditemukan. Silakan periksa kembali kode Anda."
+
+        )
 
     # =========================
     # PROGRESS

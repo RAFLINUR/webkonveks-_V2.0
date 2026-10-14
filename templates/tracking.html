@@ -1,281 +1,330 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-  <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width,
-                 initial-scale=1.0">
-
-  <title>Tracking Order</title>
-
-  <style>
-
-    body{
-
-      font-family: Arial;
-
-      background: #f5f6fa;
-
-      margin: 0;
-
-      padding: 30px;
-
-    }
-
-    .container{
-
-      max-width: 700px;
-
-      margin: auto;
-
-      background: white;
-
-      padding: 30px;
-
-      border-radius: 20px;
-
-      box-shadow:
-        0 5px 20px rgba(0,0,0,0.08);
-
-    }
-
-    .title{
-
-      font-size: 28px;
-
-      font-weight: bold;
-
-      margin-bottom: 5px;
-
-    }
-
-    .subtitle{
-
-      color: grey;
-
-      margin-bottom: 30px;
-
-    }
-
-    .card{
-
-      background: #f9f9f9;
-
-      padding: 20px;
-
-      border-radius: 15px;
-
-      margin-bottom: 20px;
-
-    }
-
-    .label{
-
-      color: grey;
-
-      font-size: 14px;
-
-    }
-
-    .value{
-
-      font-size: 20px;
-
-      font-weight: bold;
-
-      margin-top: 5px;
-
-    }
-
-    .status{
-
-      display: inline-block;
-
-      padding:
-        10px 18px;
-
-      border-radius: 10px;
-
-      color: white;
-
-      font-weight: bold;
-
-      margin-top: 10px;
-
-    }
-
-    .pending{
-      background: orange;
-    }
-
-    .approved{
-      background: #0d9488;
-    }
-
-    .sewing{
-      background: blue;
-    }
-
-    .printing{
-      background: purple;
-    }
-
-    .done{
-      background: green;
-    }
-
-    .progress-container{
-
-      margin-top: 30px;
-
-    }
-
-    .progress-bar{
-
-      width: 100%;
-
-      height: 12px;
-
-      background: #ddd;
-
-      border-radius: 20px;
-
-      overflow: hidden;
-
-    }
-
-    .progress{
-
-      height: 100%;
-
-      background: #5B5FEF;
-
-    }
-
-    .timeline{
-
-      display: flex;
-
-      justify-content:
-        space-between;
-
-      margin-top: 10px;
-
-      font-size: 14px;
-
-    }
-
-  </style>
-
-</head>
-
-<body>
-
-  <div class="container">
-
-    <div class="title">
-      TRACKING ORDER
-    </div>
-
-    <div class="subtitle">
-      Pantau progres produksi realtime
-    </div>
-
-    <div class="card">
-
-      <div class="label">
-        Kode Order
-      </div>
-
-      <div class="value">
-        {{ order.kode_order }}
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <div class="label">
-        Nama Customer
-      </div>
-
-      <div class="value">
-        {{ order.nama_customer }}
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <div class="label">
-        Produk
-      </div>
-
-      <div class="value">
-        {{ order.produk }}
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <div class="label">
-        Jumlah
-      </div>
-
-      <div class="value">
-        {{ order.jumlah }}
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <div class="label">
-        Status Produksi
-      </div>
-
-      <div class="status
-      {{ order.status.lower() }}">
-
-        {{ order.status }}
-
-      </div>
-
-      <div class="progress-container">
-
-        <div class="progress-bar">
-
-          <div class="progress"
-
-               style="width:
-               {{ progress }}%">
-
-          </div>
+{% extends "layout.html" %}
+
+{% block title %}
+Status Pesanan - WebKonveksi
+{% endblock %}
+
+{% block content %}
+
+{% set steps = [
+    {'name': 'Pending',  'val': 25,  'icon': '📋'},
+    {'name': 'Sewing',   'val': 50,  'icon': '🧵'},
+    {'name': 'Printing', 'val': 75,  'icon': '🎨'},
+    {'name': 'Done',     'val': 100, 'icon': '✅'}
+] %}
+
+<section class="tracking-section">
+    <div class="container">
+        <div class="mx-auto" style="max-width: 760px;">
+
+            <div class="text-center mb-4">
+                <span class="badge-product">TRACKING ORDER</span>
+                <h1 class="tracking-title">Status Pesanan</h1>
+                <p class="tracking-subtitle">Pantau progres produksi secara realtime.</p>
+            </div>
+
+            <div class="tracking-card">
+
+                <div class="tracking-head">
+                    <div>
+                        <div class="tracking-label">Kode Order</div>
+                        <div class="tracking-code">{{ order.kode_order }}</div>
+                    </div>
+
+                    <span class="status-pill status-{{ order.status.lower() }}">
+                        {{ order.status }}
+                    </span>
+                </div>
+
+                <div class="stepper">
+                    <div class="stepper-track">
+                        <div class="stepper-fill" style="width: {{ ((progress / 25 - 1) / 3 * 100) }}%"></div>
+                    </div>
+
+                    <div class="stepper-steps">
+                        {% for step in steps %}
+                        <div class="step {% if progress >= step.val %}is-active{% endif %} {% if progress == step.val %}is-current{% endif %}">
+                            <div class="step-dot">
+                                {% if progress > step.val %}✓{% else %}{{ step.icon }}{% endif %}
+                            </div>
+                            <div class="step-name">{{ step.name }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="tracking-label">Nama Customer</span>
+                        <span class="detail-value">{{ order.nama_customer }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="tracking-label">Produk</span>
+                        <span class="detail-value">{{ order.produk }}</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="tracking-label">Jumlah</span>
+                        <span class="detail-value">{{ order.jumlah }} pcs</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="/tracking" class="tracking-back">← Lacak kode order lain</a>
+            </div>
 
         </div>
-
-        <div class="timeline">
-
-          <span>Pending</span>
-
-          <span>Sewing</span>
-
-          <span>Printing</span>
-
-          <span>Done</span>
-
-        </div>
-
-      </div>
-
     </div>
+</section>
 
-  </div>
+<style>
 
-</body>
+    .tracking-section{
+        padding: 80px 0 40px;
+    }
 
-</html>
+    .badge-product{
+        background: #EDE9FE;
+        color: #7C3AED;
+        padding: 8px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .tracking-title{
+        font-weight: 700;
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        color: #1F2937;
+        letter-spacing: -0.5px;
+        margin-bottom: 12px;
+    }
+
+    .tracking-subtitle{
+        color: #6B7280;
+        margin-bottom: 0;
+    }
+
+    .tracking-card{
+        background: #fff;
+        border-radius: 24px;
+        padding: 34px;
+        box-shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+    }
+
+    .tracking-head{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #F3F4F6;
+    }
+
+    .tracking-label{
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #9CA3AF;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tracking-code{
+        font-size: 22px;
+        font-weight: 700;
+        color: #1F2937;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pill{
+        display: inline-flex;
+        align-items: center;
+        padding: 9px 20px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending{
+        background: #FEF3C7;
+        color: #B45309;
+    }
+
+    .status-approved{
+        background: #CCFBF1;
+        color: #0F766E;
+    }
+
+    .status-sewing{
+        background: #DBEAFE;
+        color: #1D4ED8;
+    }
+
+    .status-printing{
+        background: #EDE9FE;
+        color: #6D28D9;
+    }
+
+    .status-done{
+        background: #DCFCE7;
+        color: #15803D;
+    }
+
+    .stepper{
+        position: relative;
+        margin: 40px 0 36px;
+    }
+
+    .stepper-track{
+        position: absolute;
+        top: 22px;
+        left: 11%;
+        right: 11%;
+        height: 4px;
+        background: #E5E7EB;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .stepper-fill{
+        height: 100%;
+        background: linear-gradient(90deg, #8B5CF6, #7C3AED);
+        border-radius: 999px;
+        transition: width 0.6s ease;
+    }
+
+    .stepper-steps{
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        z-index: 1;
+    }
+
+    .step{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: 25%;
+    }
+
+    .step-dot{
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #F3F4F6;
+        color: #9CA3AF;
+        font-size: 18px;
+        border: 4px solid #fff;
+        box-shadow: 0 4px 12px rgba(17, 24, 39, 0.08);
+        transition: 0.3s;
+    }
+
+    .step.is-active .step-dot{
+        background: #7C3AED;
+        color: #fff;
+    }
+
+    .step.is-current .step-dot{
+        background: #7C3AED;
+        color: #fff;
+        box-shadow: 0 0 0 6px rgba(124, 58, 237, 0.18);
+    }
+
+    .step-name{
+        font-size: 13px;
+        font-weight: 600;
+        color: #9CA3AF;
+        transition: 0.3s;
+    }
+
+    .step.is-active .step-name{
+        color: #4B5563;
+    }
+
+    .step.is-current .step-name{
+        color: #7C3AED;
+    }
+
+    .detail-grid{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding-top: 28px;
+        border-top: 1px solid #F3F4F6;
+    }
+
+    .detail-item{
+        background: #F9FAFB;
+        border-radius: 16px;
+        padding: 18px;
+    }
+
+    .detail-value{
+        display: block;
+        font-size: 16px;
+        font-weight: 600;
+        color: #1F2937;
+        word-break: break-word;
+    }
+
+    .tracking-back{
+        text-decoration: none;
+        color: #7C3AED;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.25s;
+    }
+
+    .tracking-back:hover{
+        color: #5B21B6;
+    }
+
+    @media (max-width: 768px){
+        .tracking-section{
+            padding: 55px 0 30px;
+        }
+
+        .tracking-card{
+            padding: 26px 20px;
+        }
+
+        .tracking-code{
+            font-size: 19px;
+        }
+
+        .step-dot{
+            width: 38px;
+            height: 38px;
+            font-size: 15px;
+        }
+
+        .step-name{
+            font-size: 11px;
+        }
+
+        .stepper-track{
+            top: 18px;
+        }
+
+        .detail-grid{
+            grid-template-columns: 1fr;
+        }
+    }
+
+</style>
+
+{% endblock %}

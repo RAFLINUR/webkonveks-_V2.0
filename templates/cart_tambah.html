@@ -1,0 +1,393 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Tambah ke Keranjang - WebKonveksi
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <h1 class="fw-bold">
+                Tambah ke Keranjang
+            </h1>
+
+            <p class="text-secondary">
+                Pilih produk, ukuran, jumlah, dan upload desain Anda.
+            </p>
+
+        </div>
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8">
+
+                <div class="custom-card">
+
+                    <form action="/keranjang/tambah" method="POST" enctype="multipart/form-data">
+
+                        {% if error %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                        {% endif %}
+
+                        <!-- Produk -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Pilih Produk
+                            </label>
+
+                            <select name="produk" id="produkSelect" class="form-select form-select-lg" required>
+
+                                <option value="">
+                                    -- Pilih Produk --
+                                </option>
+
+                                {% for nama in products_meta %}
+                                <option value="{{ nama }}" {% if produk_pilihan==nama %} selected {% endif %}>
+                                    {{ nama }}
+                                </option>
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <!-- Variasi Size (apparel) -->
+                        <div id="variasiBaju">
+
+                            <div class="mb-4">
+
+                                <label class="form-label fw-semibold">
+                                    Jumlah Pesanan
+                                </label>
+
+                                <div class="row g-3 mt-1">
+
+                                    {% for size in sizes %}
+                                    <div class="col-md-6">
+
+                                        <div class="custom-card p-3">
+
+                                            <h6 class="fw-bold mb-3">
+                                                Size {{ size }}
+                                            </h6>
+
+                                            <label class="mb-2">
+                                                Lengan Pendek
+                                            </label>
+
+                                            <input type="number" name="{{ size|lower }}_pendek"
+                                                class="form-control mb-3" min="0">
+
+                                            <label class="mb-2">
+                                                Lengan Panjang
+                                            </label>
+
+                                            <input type="number" name="{{ size|lower }}_panjang"
+                                                class="form-control" min="0">
+
+                                        </div>
+
+                                    </div>
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Quantity Simple -->
+                        <div id="quantitySimple" class="mb-4" style="display:none;">
+
+                            <label class="form-label fw-semibold">
+                                Jumlah Pesanan
+                            </label>
+
+                            <input type="number" id="simpleQty" name="simpleQty" class="form-control form-control-lg"
+                                min="0" placeholder="Masukkan jumlah pesanan">
+
+                        </div>
+
+                        <!-- Ringkasan -->
+                        <div class="custom-card mt-4">
+
+                            <h4 class="fw-bold mb-3">
+                                Ringkasan Produk
+                            </h4>
+
+                            <div class="d-flex justify-content-between mb-2">
+
+                                <span>Total Quantity</span>
+
+                                <span id="totalQty">0 pcs</span>
+
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+
+                                <span>Estimasi Harga</span>
+
+                                <span class="fw-bold text-success" id="totalHarga">
+                                    Rp 0
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Upload Desain -->
+                        <div class="mb-4 mt-4">
+
+                            <label class="form-label fw-semibold">
+                                Upload Desain
+                            </label>
+
+                            <input type="file" id="desainInput" name="desain" accept=".png,.jpg,.jpeg,.pdf"
+                                class="form-control form-control-lg">
+
+                            <small class="text-secondary">
+                                Format: PNG, JPG, JPEG, PDF
+                            </small>
+
+                            <div id="filePreview" class="mt-2 text-success fw-semibold"></div>
+
+                        </div>
+
+                        <!-- Catatan -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Catatan Tambahan
+                            </label>
+
+                            <textarea name="catatan" class="form-control" rows="4"
+                                placeholder="Tambahkan detail pesanan..."></textarea>
+
+                        </div>
+
+                        <!-- Button -->
+                        <div class="d-grid">
+
+                            <button type="submit" class="btn btn-custom btn-lg">
+                                Tambah ke Keranjang
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<style>
+    .form-control,
+    .form-select {
+        border-radius: 14px;
+        border: 1px solid #E5E7EB;
+        padding: 14px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 0 0 0.15rem rgba(124, 58, 237, 0.2);
+    }
+
+    textarea {
+        resize: none;
+    }
+</style>
+
+<script>
+
+    // Metadata produk dari server (tipe, harga, minimal)
+    const productsMeta = {{ products_meta | tojson }};
+
+    const produkSelect = document.getElementById("produkSelect");
+
+    const variasiBaju = document.getElementById("variasiBaju");
+
+    const quantitySimple = document.getElementById("quantitySimple");
+
+    const simpleQty = document.getElementById("simpleQty");
+
+    const totalQty = document.getElementById("totalQty");
+
+    const totalHarga = document.getElementById("totalHarga");
+
+    const desainInput = document.getElementById("desainInput");
+
+    const filePreview = document.getElementById("filePreview");
+
+    desainInput.addEventListener("change", function () {
+
+        if (desainInput.files.length > 0) {
+
+            filePreview.innerHTML = "File dipilih: " + desainInput.files[0].name;
+
+        } else {
+
+            filePreview.innerHTML = "";
+
+        }
+
+    });
+
+    function toggleFormProduk() {
+
+        const meta = productsMeta[produkSelect.value];
+
+        if (meta && meta.tipe === "simple") {
+
+            variasiBaju.style.display = "none";
+
+            quantitySimple.style.display = "block";
+
+        } else {
+
+            variasiBaju.style.display = "block";
+
+            quantitySimple.style.display = "none";
+
+        }
+
+    }
+
+    function hitungHarga() {
+
+        const meta = productsMeta[produkSelect.value];
+
+        if (!meta) {
+
+            totalQty.innerHTML = "0 pcs";
+
+            totalHarga.innerHTML = "Rp 0";
+
+            return;
+
+        }
+
+        let totalQtyValue = 0;
+
+        let totalHargaValue = 0;
+
+        if (meta.tipe === "simple") {
+
+            const qty = parseInt(simpleQty.value) || 0;
+
+            const harga = meta.harga.Pendek || 0;
+
+            totalQtyValue = qty;
+
+            totalHargaValue = qty * harga;
+
+        } else {
+
+            const hargaPendek = meta.harga.Pendek || 0;
+
+            const hargaPanjang = meta.harga.Panjang || 0;
+
+            const sizes = ["s", "m", "l", "xl"];
+
+            sizes.forEach(function (s) {
+
+                const pendek = parseInt(document.querySelector('input[name="' + s + '_pendek"]').value) || 0;
+
+                const panjang = parseInt(document.querySelector('input[name="' + s + '_panjang"]').value) || 0;
+
+                totalQtyValue += pendek + panjang;
+
+                totalHargaValue += (pendek * hargaPendek) + (panjang * hargaPanjang);
+
+            });
+
+        }
+
+        totalQty.innerHTML = totalQtyValue + " pcs";
+
+        totalHarga.innerHTML = "Rp " + totalHargaValue.toLocaleString("id-ID");
+
+    }
+
+    produkSelect.addEventListener("change", function () {
+
+        toggleFormProduk();
+
+        hitungHarga();
+
+    });
+
+    document.querySelectorAll("input[type=number]").forEach(function (input) {
+
+        input.addEventListener("input", hitungHarga);
+
+    });
+
+    document.querySelector("form").addEventListener("submit", function (event) {
+
+        const meta = productsMeta[produkSelect.value];
+
+        if (!meta) return;
+
+        let total = 0;
+
+        if (meta.tipe === "apparel") {
+
+            const sizes = ["s", "m", "l", "xl"];
+
+            sizes.forEach(function (s) {
+
+                total += parseInt(document.querySelector('input[name="' + s + '_pendek"]').value) || 0;
+
+                total += parseInt(document.querySelector('input[name="' + s + '_panjang"]').value) || 0;
+
+            });
+
+        } else {
+
+            total = parseInt(simpleQty.value) || 0;
+
+        }
+
+        if (total <= 0) {
+
+            event.preventDefault();
+
+            alert("Minimal isi jumlah pesanan.");
+
+            return;
+
+        }
+
+        if (total < (meta.minimal || 1)) {
+
+            event.preventDefault();
+
+            alert("Minimal order " + produkSelect.value + " adalah " + meta.minimal + " pcs.");
+
+        }
+
+    });
+
+    toggleFormProduk();
+
+    hitungHarga();
+
+</script>
+
+{% endblock %}

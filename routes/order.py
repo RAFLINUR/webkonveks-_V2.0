@@ -137,14 +137,53 @@ def save_log(activity, ip):
 # =========================
 def generate_order_code():
 
-    total_order = (
-        mongo.db.orders
-        .count_documents({})
-    ) + 1
-
     tahun = datetime.now().year
 
-    return f"ORD{tahun}{total_order:03d}"
+    prefix = f"ORD{tahun}"
+
+    # Pakai nomor urut TERBESAR tahun ini, bukan jumlah order.
+    # Kalau pakai jumlah order, kode bisa terpakai ulang setelah
+    # order dihapus (menyebabkan kode_order duplikat).
+    max_num = 0
+
+    for order in mongo.db.orders.find(
+        {
+            "kode_order": {
+                "$regex": f"^{prefix}\\d+$"
+            }
+        },
+        {
+            "kode_order": 1
+        }
+    ):
+
+        try:
+
+            num = int(
+                order["kode_order"][len(prefix):]
+            )
+
+            if num > max_num:
+                max_num = num
+
+        except (KeyError, ValueError, TypeError):
+
+            continue
+
+    nomor = max_num + 1
+
+    kode_order = f"{prefix}{nomor:03d}"
+
+    # Pastikan benar-benar unik (jaga-jaga race condition).
+    while mongo.db.orders.count_documents({
+        "kode_order": kode_order
+    }) > 0:
+
+        nomor += 1
+
+        kode_order = f"{prefix}{nomor:03d}"
+
+    return kode_order
 
 # =========================
 # ORDER
@@ -228,37 +267,13 @@ def order():
 
         # =========================
         # RATE LIMIT ANTI ASAL ORDER
-        # 1 nomor WhatsApp = maksimal 1 order per 24 jam
         # 1 IP = maksimal 3 order per jam
+        # (Limit per nomor WhatsApp sudah dihapus)
         # =========================
 
         now = datetime.now()
 
         whatsapp_norm = normalize_phone(whatsapp)
-
-        duplikat_nomor = mongo.db.orders.find_one({
-
-            "whatsapp_norm": whatsapp_norm,
-
-            "created_at": {
-                "$gte": now - timedelta(hours=24)
-            }
-
-        })
-
-        if duplikat_nomor:
-
-            return render_template(
-
-                "order.html",
-
-                produk_pilihan=produk_pilihan,
-
-                error="Nomor WhatsApp ini baru membuat pesanan "
-                      "dalam 24 jam terakhir. "
-                      "Silakan hubungi admin untuk pesanan tambahan."
-
-            )
 
         if mongo.db.orders.count_documents({
 
@@ -676,6 +691,12 @@ def api_orders():
             "variasi":
                 order.get(
                     "variasi",
+                    []
+                ),
+
+            "items":
+                order.get(
+                    "items",
                     []
                 ),
             
@@ -1167,6 +1188,60 @@ def delete_order(id):
 
         "message": "Order berhasil dihapus"
 
+    })
+
+
+# =========================
+# BULK DELETE ORDER
+# Hapus beberapa order sekaligus berdasarkan daftar id
+# =========================
+@order_bp.route(
+    "/api/orders/bulk-delete",
+    methods=["POST"]
+)
+def bulk_delete_orders():
+
+    data = request.get_json(silent=True) or {}
+
+    ids = data.get("ids") or []
+
+    object_ids = []
+
+    for item in ids:
+
+        try:
+
+            object_ids.append(
+                ObjectId(item)
+            )
+
+        except Exception:
+
+            continue
+
+    if not object_ids:
+
+        return jsonify({
+            "success": False,
+            "message": "Tidak ada order yang dipilih"
+        }), 400
+
+    result = mongo.db.orders.delete_many({
+        "_id": {
+            "$in": object_ids
+        }
+    })
+
+    save_log(
+        f"Hapus {result.deleted_count} order sekaligus",
+        request.remote_addr
+    )
+
+    return jsonify({
+        "success": True,
+        "deleted": result.deleted_count,
+        "message":
+            f"{result.deleted_count} order berhasil dihapus"
     })
 
 

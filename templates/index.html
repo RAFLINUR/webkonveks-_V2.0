@@ -1,722 +1,604 @@
-<!DOCTYPE html>
-<html lang="id">
+{% extends "layout.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Konveksi</title>
+{% block title %}
+Home - WebKonveksi
+{% endblock %}
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+{% block content %}
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <div class="row align-items-center g-5">
 
-    <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
+            <div class="col-lg-6">
 
-        body {
-            background: #F8F7FF;
-            color: #1F2937;
-        }
+                <span class="section-label">Konveksi Digital Terpercaya</span>
 
-        /* ===== Navbar ===== */
+                <h1 class="hero-title">
+                    Solusi <span>Konveksi Modern</span> Untuk Bisnis Anda
+                </h1>
 
-        .navbar {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 14px rgba(17, 24, 39, 0.06);
-            padding: 14px 0;
-        }
+                <p class="hero-text">
+                    Pesan kaos, totebag, polo bordir, ID card, dan berbagai kebutuhan konveksi dengan proses cepat,
+                    kualitas premium, dan desain custom.
+                </p>
 
-        .navbar-brand {
-            font-weight: 700;
-            color: #7C3AED !important;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+                <div class="d-flex flex-wrap gap-3 justify-content-lg-start justify-content-center">
+                    <a href="/order" class="btn btn-primary-custom">Order Sekarang</a>
+                    <a href="/produk" class="btn btn-ghost-custom">Lihat Produk</a>
+                </div>
 
-        .nav-link {
-            color: #4B5563 !important;
-            font-weight: 500;
-            margin-left: 18px;
-            transition: 0.25s;
-        }
+            </div>
 
-        .nav-link:hover {
-            color: #7C3AED !important;
-        }
+            <div class="col-lg-6">
 
-        /* ===== Tombol ===== */
-
-        .btn-primary-custom {
-            background: #7C3AED;
-            border: none;
-            padding: 13px 28px;
-            border-radius: 14px;
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 10px 22px rgba(124, 58, 237, 0.25);
-            transition: 0.25s;
-        }
-
-        .btn-primary-custom:hover {
-            background: #6D28D9;
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-        .btn-ghost-custom {
-            padding: 13px 26px;
-            border-radius: 14px;
-            border: 1px solid #E5E7EB;
-            background: #fff;
-            color: #1F2937;
-            font-weight: 600;
-            transition: 0.25s;
-        }
-
-        .btn-ghost-custom:hover {
-            border-color: #7C3AED;
-            color: #7C3AED;
-        }
-
-        /* ===== Judul Section ===== */
-
-        .section-label {
-            display: inline-block;
-            background: #EDE9FE;
-            color: #7C3AED;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 7px 16px;
-            border-radius: 50px;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 34px;
-            font-weight: 700;
-            color: #111827;
-            margin-bottom: 12px;
-        }
-
-        .section-desc {
-            color: #6B7280;
-            line-height: 1.8;
-            max-width: 640px;
-        }
-
-        section {
-            padding: 70px 0;
-        }
-
-        /* ===== Hero ===== */
-
-        .hero {
-            padding: 90px 0 70px;
-        }
-
-        .hero-title {
-            font-size: 48px;
-            font-weight: 700;
-            line-height: 1.2;
-            color: #111827;
-        }
-
-        .hero-title span {
-            color: #7C3AED;
-        }
-
-        .hero-text {
-            color: #6B7280;
-            margin: 22px 0 30px;
-            line-height: 1.85;
-            font-size: 17px;
-        }
-
-        .hero-image {
-            width: 100%;
-            border-radius: 28px;
-            box-shadow: 0 24px 48px rgba(17, 24, 39, 0.12);
-        }
-
-        /* ===== Produk ===== */
-
-        .product-card {
-            background: #fff;
-            border-radius: 24px;
-            padding: 16px;
-            border: 1px solid #F1F0FA;
-            box-shadow: 0 8px 24px rgba(17, 24, 39, 0.05);
-            transition: 0.3s;
-            height: 100%;
-        }
-
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 18px 36px rgba(17, 24, 39, 0.10);
-        }
-
-        .product-card img {
-            width: 100%;
-            border-radius: 18px;
-            height: 210px;
-            object-fit: cover;
-        }
-
-        .product-card h5 {
-            margin: 18px 0 6px;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .product-card p {
-            color: #6B7280;
-            font-size: 14.5px;
-            line-height: 1.7;
-            margin-bottom: 0;
-        }
-
-        /* ===== About ===== */
-
-        .about {
-            background: #fff;
-            border-radius: 32px;
-            padding: 56px;
-            border: 1px solid #F1F0FA;
-            box-shadow: 0 10px 30px rgba(17, 24, 39, 0.05);
-        }
-
-        .about p {
-            text-align: justify;
-            line-height: 1.9;
-            color: #4B5563;
-            margin: 0;
-        }
-
-        /* ===== Analisis (paling bawah) ===== */
-
-        .analysis {
-            padding-bottom: 40px;
-        }
-
-        .analysis-card {
-            background: #fff;
-            border: 1px solid #F1F0FA;
-            border-radius: 28px;
-            padding: 40px;
-            box-shadow: 0 12px 34px rgba(17, 24, 39, 0.06);
-        }
-
-        .analysis-head {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 28px;
-            margin-bottom: 28px;
-            border-bottom: 1px solid #F3F4F6;
-        }
-
-        .analysis-head h2 {
-            font-size: 26px;
-            font-weight: 700;
-            margin: 0 0 6px;
-        }
-
-        .analysis-meta {
-            font-size: 14px;
-            color: #9CA3AF;
-            margin: 0;
-        }
-
-        .analysis-total {
-            text-align: center;
-            background: #F5F3FF;
-            border: 1px solid #EDE9FE;
-            border-radius: 20px;
-            padding: 16px 30px;
-            min-width: 150px;
-        }
-
-        .analysis-total strong {
-            display: block;
-            font-size: 32px;
-            font-weight: 700;
-            color: #7C3AED;
-            line-height: 1.1;
-        }
-
-        .analysis-total span {
-            font-size: 13px;
-            color: #6B7280;
-            font-weight: 500;
-        }
-
-        .chart-box {
-            background: #FAFAFF;
-            border: 1px solid #F3F2FB;
-            border-radius: 20px;
-            padding: 22px;
-            height: 100%;
-        }
-
-        .chart-box h6 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 18px;
-        }
-
-        .chart-empty {
-            color: #9CA3AF;
-            font-size: 14px;
-            text-align: center;
-            padding: 60px 0;
-            margin: 0;
-        }
-
-        .chip-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 26px;
-        }
-
-        .chip {
-            background: #F9FAFB;
-            border: 1px solid #E5E7EB;
-            border-radius: 50px;
-            padding: 8px 16px;
-            font-size: 13.5px;
-            color: #6B7280;
-        }
-
-        .chip b {
-            color: #111827;
-            font-weight: 600;
-            margin-left: 6px;
-        }
-
-        /* ===== Footer ===== */
-
-        .footer {
-            margin-top: 70px;
-            background: #111827;
-            color: #fff;
-            padding: 46px 0;
-            text-align: center;
-        }
-
-        .footer h5 {
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .footer p {
-            color: #9CA3AF;
-            margin-bottom: 0;
-            font-size: 14.5px;
-        }
-
-        /* ===== Responsive ===== */
-
-        @media (max-width: 991px) {
-            .hero-title {
-                font-size: 36px;
-            }
-
-            .section-title {
-                font-size: 27px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero {
-                padding: 50px 0;
-                text-align: center;
-            }
-
-            .hero-image {
-                margin-top: 36px;
-            }
-
-            .about,
-            .analysis-card {
-                padding: 28px;
-            }
-
-            .analysis-head {
-                justify-content: flex-start;
-            }
-
-            section {
-                padding: 50px 0;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
-
-            <a class="navbar-brand" href="/">
-                <img src="{{ url_for('static', filename='img/logo_app.png') }}" alt="Logo" class="nav-logo">
-                <span>WebKonveksi</span>
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-
-                <ul class="navbar-nav ms-auto align-items-lg-center">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/produk">Produk</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/order">Order</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="/tracking">Tracking</a>
-                    </li>
-
-                    <li class="nav-item ms-lg-3">
-                        <a href="/order" class="btn btn-primary-custom">Order Sekarang</a>
-                    </li>
-
-                </ul>
+                <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format&fit=crop"
+                    class="hero-image" alt="Konveksi">
 
             </div>
 
         </div>
-    </nav>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="container">
+    </div>
+</section>
 
-            <div class="row align-items-center g-5">
+<!-- Produk -->
+<section>
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <span class="section-label">Produk Kami</span>
+            <h2 class="section-title">Pilihan Produk Unggulan</h2>
+            <p class="section-desc mx-auto">
+                Produk custom dengan bahan premium dan pengerjaan rapi untuk kebutuhan bisnis,
+                komunitas, maupun event Anda.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='img/BACK Tshirt design.jpeg') }}"
+                        alt="Kaos Sablon">
+                    <h5>Kaos Sablon</h5>
+                    <p>Kaos custom premium dengan kualitas bahan terbaik.</p>
+                    <a href="/keranjang/tambah?produk=Kaos Sablon" class="btn btn-custom btn-sm rounded-3 mt-2">
+                        Tambah Keranjang
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="https://i.pinimg.com/1200x/95/8f/a2/958fa2eef069e4336360581a4d4b638b.jpg"
+                        alt="Totebag">
+                    <h5>Totebag</h5>
+                    <p>Totebag custom modern untuk event dan merchandise.</p>
+                    <a href="/keranjang/tambah?produk=Totebag" class="btn btn-custom btn-sm rounded-3 mt-2">
+                        Tambah Keranjang
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="https://i.pinimg.com/1200x/68/f1/a5/68f1a52f225fa13bf723e5a7d4b6f4da.jpg"
+                        alt="Polo Bordir">
+                    <h5>Polo Bordir</h5>
+                    <p>Polo elegan dengan bordir berkualitas tinggi.</p>
+                    <a href="/keranjang/tambah?produk=Polo Bordir" class="btn btn-custom btn-sm rounded-3 mt-2">
+                        Tambah Keranjang
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="product-card">
+                    <img src="https://i.pinimg.com/736x/b3/5a/06/b35a066873d9d10b73181afd243caf9d.jpg"
+                        alt="ID Card">
+                    <h5>ID Card</h5>
+                    <p>Paket ID Card dan lanyard untuk perusahaan dan event.</p>
+                    <a href="/keranjang/tambah?produk=ID Card + Lanyard" class="btn btn-custom btn-sm rounded-3 mt-2">
+                        Tambah Keranjang
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- About -->
+<section>
+    <div class="container">
+
+        <div class="about">
+
+            <div class="row align-items-center g-4">
 
                 <div class="col-lg-6">
 
-                    <span class="section-label">Konveksi Digital Terpercaya</span>
+                    <span class="section-label">Tentang Kami</span>
 
-                    <h1 class="hero-title">
-                        Solusi <span>Konveksi Modern</span> Untuk Bisnis Anda
-                    </h1>
+                    <h2 class="section-title">
+                        Konveksi Presisi <br class="d-none d-lg-block"> Berbasis Digital
+                    </h2>
 
-                    <p class="hero-text">
-                        Pesan kaos, totebag, polo bordir, ID card, dan berbagai kebutuhan konveksi dengan proses cepat,
-                        kualitas premium, dan desain custom.
+                    <p>
+                        Kami merevolusi layanan konveksi tradisional dengan menghadirkan solusi produksi apparel
+                        berbasis digital. Dengan perpaduan material bermutu tinggi dan sistem pemesanan yang
+                        terintegrasi, WebKonveksi memastikan setiap detail desain Anda diwujudkan menjadi produk
+                        nyata dengan standar kualitas terbaik dan ketepatan waktu yang terjamin.
                     </p>
 
-                    <div class="d-flex flex-wrap gap-3 justify-content-lg-start justify-content-center">
-                        <a href="/order" class="btn btn-primary-custom">Order Sekarang</a>
-                        <a href="/produk" class="btn btn-ghost-custom">Lihat Produk</a>
-                    </div>
-
                 </div>
 
                 <div class="col-lg-6">
 
-                    <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format&fit=crop"
-                        class="hero-image" alt="Konveksi">
+                    <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=1200&auto=format&fit=crop"
+                        class="hero-image" alt="Tentang Kami">
 
                 </div>
 
             </div>
 
         </div>
-    </section>
 
-    <!-- Produk -->
-    <section>
-        <div class="container">
+    </div>
+</section>
 
-            <div class="text-center mb-5">
-                <span class="section-label">Produk Kami</span>
-                <h2 class="section-title">Pilihan Produk Unggulan</h2>
-                <p class="section-desc mx-auto">
-                    Produk custom dengan bahan premium dan pengerjaan rapi untuk kebutuhan bisnis,
-                    komunitas, maupun event Anda.
-                </p>
+<!-- Analisis Barang Populer (paling bawah) -->
+<section class="analysis">
+    <div class="container">
+
+        <div class="analysis-card">
+
+            <div class="analysis-head">
+
+                <div>
+                    <span class="section-label">Statistik</span>
+                    <h2>Analisis Barang Populer</h2>
+                    <p class="analysis-meta">
+                        Terakhir diperbarui :
+                        {% if last_update %}
+                            {{ last_update.strftime("%d %B %Y %H:%M WIB") }}
+                        {% else %}
+                            Belum ada data
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="analysis-total">
+                    <strong>{{ total_video }}</strong>
+                    <span>Total Data</span>
+                </div>
+
             </div>
+
+            {% if labels %}
 
             <div class="row g-4">
 
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card">
-                        <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1200&auto=format&fit=crop"
-                            alt="Kaos Sablon">
-                        <h5>Kaos Sablon</h5>
-                        <p>Kaos custom premium dengan kualitas bahan terbaik.</p>
+                <div class="col-lg-7">
+                    <div class="chart-box">
+                        <h6>Jumlah Data per Barang</h6>
+                        <canvas id="barChart"></canvas>
                     </div>
                 </div>
 
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card">
-                        <img src="https://i.pinimg.com/1200x/95/8f/a2/958fa2eef069e4336360581a4d4b638b.jpg"
-                            alt="Totebag">
-                        <h5>Totebag</h5>
-                        <p>Totebag custom modern untuk event dan merchandise.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card">
-                        <img src="https://i.pinimg.com/1200x/68/f1/a5/68f1a52f225fa13bf723e5a7d4b6f4da.jpg"
-                            alt="Polo Bordir">
-                        <h5>Polo Bordir</h5>
-                        <p>Polo elegan dengan bordir berkualitas tinggi.</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3">
-                    <div class="product-card">
-                        <img src="https://i.pinimg.com/736x/b3/5a/06/b35a066873d9d10b73181afd243caf9d.jpg"
-                            alt="ID Card">
-                        <h5>ID Card</h5>
-                        <p>Paket ID Card dan lanyard untuk perusahaan dan event.</p>
+                <div class="col-lg-5">
+                    <div class="chart-box">
+                        <h6>Proporsi Barang</h6>
+                        <canvas id="pieChart"></canvas>
                     </div>
                 </div>
 
             </div>
 
-        </div>
-    </section>
-
-    <!-- About -->
-    <section>
-        <div class="container">
-
-            <div class="about">
-
-                <div class="row align-items-center g-4">
-
-                    <div class="col-lg-6">
-
-                        <span class="section-label">Tentang Kami</span>
-
-                        <h2 class="section-title">
-                            Konveksi Presisi <br class="d-none d-lg-block"> Berbasis Digital
-                        </h2>
-
-                        <p>
-                            Kami merevolusi layanan konveksi tradisional dengan menghadirkan solusi produksi apparel
-                            berbasis digital. Dengan perpaduan material bermutu tinggi dan sistem pemesanan yang
-                            terintegrasi, WebKonveksi memastikan setiap detail desain Anda diwujudkan menjadi produk
-                            nyata dengan standar kualitas terbaik dan ketepatan waktu yang terjamin.
-                        </p>
-
-                    </div>
-
-                    <div class="col-lg-6">
-
-                        <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=1200&auto=format&fit=crop"
-                            class="hero-image" alt="Tentang Kami">
-
-                    </div>
-
-                </div>
-
+            <div class="chip-list">
+                <span class="chip">Kaos <b>{{ kaos }}</b></span>
+                <span class="chip">Totebag <b>{{ totebag }}</b></span>
+                <span class="chip">Polo <b>{{ polo }}</b></span>
+                <span class="chip">Lanyard <b>{{ lanyard }}</b></span>
+                <span class="chip">ID Card <b>{{ idcard }}</b></span>
             </div>
 
-        </div>
-    </section>
+            {% else %}
 
-    <!-- Analisis Barang Populer (paling bawah) -->
-    <section class="analysis">
-        <div class="container">
+            <p class="chart-empty">
+                Belum ada data analisis yang bisa ditampilkan.
+            </p>
 
-            <div class="analysis-card">
-
-                <div class="analysis-head">
-
-                    <div>
-                        <span class="section-label">Statistik</span>
-                        <h2>Analisis Barang Populer</h2>
-                        <p class="analysis-meta">
-                            Terakhir diperbarui :
-                            {% if last_update %}
-                                {{ last_update.strftime("%d %B %Y %H:%M WIB") }}
-                            {% else %}
-                                Belum ada data
-                            {% endif %}
-                        </p>
-                    </div>
-
-                    <div class="analysis-total">
-                        <strong>{{ total_video }}</strong>
-                        <span>Total Data</span>
-                    </div>
-
-                </div>
-
-                {% if labels %}
-
-                <div class="row g-4">
-
-                    <div class="col-lg-7">
-                        <div class="chart-box">
-                            <h6>Jumlah Data per Barang</h6>
-                            <canvas id="barChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-5">
-                        <div class="chart-box">
-                            <h6>Proporsi Barang</h6>
-                            <canvas id="pieChart"></canvas>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="chip-list">
-                    <span class="chip">Kaos <b>{{ kaos }}</b></span>
-                    <span class="chip">Totebag <b>{{ totebag }}</b></span>
-                    <span class="chip">Polo <b>{{ polo }}</b></span>
-                    <span class="chip">Lanyard <b>{{ lanyard }}</b></span>
-                    <span class="chip">ID Card <b>{{ idcard }}</b></span>
-                </div>
-
-                {% else %}
-
-                <p class="chart-empty">
-                    Belum ada data analisis yang bisa ditampilkan.
-                </p>
-
-                {% endif %}
-
-            </div>
+            {% endif %}
 
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
+    </div>
+</section>
 
-            <h5>WebKonveksi</h5>
-            <p>© 2026 All Rights Reserved</p>
+<style>
+    /* ===== Tombol ===== */
 
-        </div>
-    </footer>
+    .btn-primary-custom {
+        background: #7C3AED;
+        border: none;
+        padding: 13px 28px;
+        border-radius: 14px;
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 10px 22px rgba(124, 58, 237, 0.25);
+        transition: 0.25s;
+    }
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    .btn-primary-custom:hover {
+        background: #6D28D9;
+        color: #fff;
+        transform: translateY(-2px);
+    }
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    .btn-ghost-custom {
+        padding: 13px 26px;
+        border-radius: 14px;
+        border: 1px solid #E5E7EB;
+        background: #fff;
+        color: #1F2937;
+        font-weight: 600;
+        transition: 0.25s;
+    }
 
-    {% if labels %}
-    <script>
+    .btn-ghost-custom:hover {
+        border-color: #7C3AED;
+        color: #7C3AED;
+    }
 
-        const labels = {{ labels | tojson }};
-        const values = {{ values | tojson }};
+    /* ===== Judul Section ===== */
 
-        const colors = ["#7C3AED", "#2563EB", "#10B981", "#F59E0B", "#EF4444", "#06B6D4"];
+    .section-label {
+        display: inline-block;
+        background: #EDE9FE;
+        color: #7C3AED;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 7px 16px;
+        border-radius: 50px;
+        margin-bottom: 16px;
+    }
 
-        Chart.defaults.font.family = "Poppins, sans-serif";
-        Chart.defaults.color = "#6B7280";
+    .section-title {
+        font-size: 34px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 12px;
+    }
 
-        new Chart(document.getElementById("barChart"), {
-            type: "bar",
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: "Jumlah Data",
-                    data: values,
-                    backgroundColor: colors,
-                    borderRadius: 8,
-                    maxBarThickness: 46
-                }]
+    .section-desc {
+        color: #6B7280;
+        line-height: 1.8;
+        max-width: 640px;
+    }
+
+    main section {
+        padding: 70px 0;
+    }
+
+    /* ===== Hero ===== */
+
+    .hero {
+        padding: 90px 0 70px;
+    }
+
+    .hero-title {
+        font-size: 48px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #111827;
+    }
+
+    .hero-title span {
+        color: #7C3AED;
+    }
+
+    .hero-text {
+        color: #6B7280;
+        margin: 22px 0 30px;
+        line-height: 1.85;
+        font-size: 17px;
+    }
+
+    .hero-image {
+        width: 100%;
+        border-radius: 28px;
+        box-shadow: 0 24px 48px rgba(17, 24, 39, 0.12);
+    }
+
+    /* ===== Produk ===== */
+
+    .product-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 16px;
+        border: 1px solid #F1F0FA;
+        box-shadow: 0 8px 24px rgba(17, 24, 39, 0.05);
+        transition: 0.3s;
+        height: 100%;
+    }
+
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 36px rgba(17, 24, 39, 0.10);
+    }
+
+    .product-card img {
+        width: 100%;
+        border-radius: 18px;
+        height: 210px;
+        object-fit: cover;
+    }
+
+    .product-card h5 {
+        margin: 18px 0 6px;
+        font-weight: 600;
+        font-size: 18px;
+    }
+
+    .product-card p {
+        color: #6B7280;
+        font-size: 14.5px;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
+    /* ===== About ===== */
+
+    .about {
+        background: #fff;
+        border-radius: 32px;
+        padding: 56px;
+        border: 1px solid #F1F0FA;
+        box-shadow: 0 10px 30px rgba(17, 24, 39, 0.05);
+    }
+
+    .about p {
+        text-align: justify;
+        line-height: 1.9;
+        color: #4B5563;
+        margin: 0;
+    }
+
+    /* ===== Analisis (paling bawah) ===== */
+
+    .analysis {
+        padding-bottom: 40px;
+    }
+
+    .analysis-card {
+        background: #fff;
+        border: 1px solid #F1F0FA;
+        border-radius: 28px;
+        padding: 40px;
+        box-shadow: 0 12px 34px rgba(17, 24, 39, 0.06);
+    }
+
+    .analysis-head {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 28px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid #F3F4F6;
+    }
+
+    .analysis-head h2 {
+        font-size: 26px;
+        font-weight: 700;
+        margin: 0 0 6px;
+    }
+
+    .analysis-meta {
+        font-size: 14px;
+        color: #9CA3AF;
+        margin: 0;
+    }
+
+    .analysis-total {
+        text-align: center;
+        background: #F5F3FF;
+        border: 1px solid #EDE9FE;
+        border-radius: 20px;
+        padding: 16px 30px;
+        min-width: 150px;
+    }
+
+    .analysis-total strong {
+        display: block;
+        font-size: 32px;
+        font-weight: 700;
+        color: #7C3AED;
+        line-height: 1.1;
+    }
+
+    .analysis-total span {
+        font-size: 13px;
+        color: #6B7280;
+        font-weight: 500;
+    }
+
+    .chart-box {
+        background: #FAFAFF;
+        border: 1px solid #F3F2FB;
+        border-radius: 20px;
+        padding: 22px;
+        height: 100%;
+    }
+
+    .chart-box h6 {
+        font-size: 15px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 18px;
+    }
+
+    .chart-empty {
+        color: #9CA3AF;
+        font-size: 14px;
+        text-align: center;
+        padding: 60px 0;
+        margin: 0;
+    }
+
+    .chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 26px;
+    }
+
+    .chip {
+        background: #F9FAFB;
+        border: 1px solid #E5E7EB;
+        border-radius: 50px;
+        padding: 8px 16px;
+        font-size: 13.5px;
+        color: #6B7280;
+    }
+
+    .chip b {
+        color: #111827;
+        font-weight: 600;
+        margin-left: 6px;
+    }
+
+    /* ===== Responsive ===== */
+
+    @media (max-width: 991px) {
+        .hero-title {
+            font-size: 36px;
+        }
+
+        .section-title {
+            font-size: 27px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero {
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .hero-image {
+            margin-top: 36px;
+        }
+
+        .about,
+        .analysis-card {
+            padding: 28px;
+        }
+
+        .analysis-head {
+            justify-content: flex-start;
+        }
+
+        main section {
+            padding: 50px 0;
+        }
+    }
+</style>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if labels %}
+<script>
+
+    const labels = {{ labels | tojson }};
+    const values = {{ values | tojson }};
+
+    const colors = ["#7C3AED", "#2563EB", "#10B981", "#F59E0B", "#EF4444", "#06B6D4"];
+
+    Chart.defaults.font.family = "Poppins, sans-serif";
+    Chart.defaults.color = "#6B7280";
+
+    new Chart(document.getElementById("barChart"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Jumlah Data",
+                data: values,
+                backgroundColor: colors,
+                borderRadius: 8,
+                maxBarThickness: 46
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: "#111827",
+                    padding: 12,
+                    cornerRadius: 10,
+                    displayColors: false
+                }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: "#111827",
-                        padding: 12,
-                        cornerRadius: 10,
-                        displayColors: false
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 },
+                    grid: { color: "#F3F4F6" },
+                    border: { display: false }
+                },
+                x: {
+                    grid: { display: false },
+                    border: { display: false }
+                }
+            }
+        }
+    });
+
+    new Chart(document.getElementById("pieChart"), {
+        type: "doughnut",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderWidth: 0,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: "68%",
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        padding: 16,
+                        font: { size: 12.5 }
                     }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { precision: 0 },
-                        grid: { color: "#F3F4F6" },
-                        border: { display: false }
-                    },
-                    x: {
-                        grid: { display: false },
-                        border: { display: false }
-                    }
+                tooltip: {
+                    backgroundColor: "#111827",
+                    padding: 12,
+                    cornerRadius: 10
                 }
             }
-        });
+        }
+    });
 
-        new Chart(document.getElementById("pieChart"), {
-            type: "doughnut",
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: values,
-                    backgroundColor: colors,
-                    borderWidth: 0,
-                    hoverOffset: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                cutout: "68%",
-                plugins: {
-                    legend: {
-                        position: "bottom",
-                        labels: {
-                            usePointStyle: true,
-                            pointStyle: "circle",
-                            padding: 16,
-                            font: { size: 12.5 }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: "#111827",
-                        padding: 12,
-                        cornerRadius: 10
-                    }
-                }
-            }
-        });
+</script>
+{% endif %}
 
-    </script>
-    {% endif %}
-
-</body>
-
-</html>
+{% endblock %}
