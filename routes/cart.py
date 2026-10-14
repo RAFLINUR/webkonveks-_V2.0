@@ -42,10 +42,12 @@ from routes.order import (
     UPLOAD_FOLDER,
 )
 
+from config import Config
+
 cart_bp = Blueprint("cart", __name__)
 
 # Folder hasil remove background (produk apparel)
-REMOVED_FOLDER = "static/removed"
+REMOVED_FOLDER = Config.REMOVED_FOLDER
 
 # Gambar QRIS statis
 QRIS_IMAGE = "img/kris.jpeg"

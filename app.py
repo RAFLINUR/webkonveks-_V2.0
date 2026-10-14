@@ -32,16 +32,14 @@ app.config.from_object(Config)
 
 mail.init_app(app)
 
-app.config["UPLOAD_FOLDER"] = "uploads"
-
-# MongoDB Config
-# MongoDB Config
-# Kode yang salah (SyntaxError):
-# MongoDB Config (Gunakan satu baris ini saja)
 # MongoDB Config
 app.config["MONGO_URI"] = Config.MONGO_URI
 # Init MongoDB
 mongo.init_app(app)
+
+# Pastikan folder penyimpanan desain tersedia (mis. saat pakai persistent disk)
+os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+os.makedirs(app.config["REMOVED_FOLDER"], exist_ok=True)
 
 # Register Blueprint
 app.register_blueprint(home_bp)
@@ -73,6 +71,24 @@ def uploaded_file(filename):
 
     return send_from_directory(
         app.config["UPLOAD_FOLDER"],
+        filename
+    )
+
+# Sajikan file desain yang tersimpan di persistent disk (Render)
+# dengan URL yang sama seperti sebelumnya (/static/uploads, /static/removed)
+@app.route("/static/uploads/<path:filename>")
+def serve_upload_design(filename):
+
+    return send_from_directory(
+        app.config["UPLOAD_FOLDER"],
+        filename
+    )
+
+@app.route("/static/removed/<path:filename>")
+def serve_removed_design(filename):
+
+    return send_from_directory(
+        app.config["REMOVED_FOLDER"],
         filename
     )
 

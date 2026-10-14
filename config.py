@@ -22,6 +22,21 @@ class Config:
     )
 
     # =========================
+    # PENYIMPANAN FILE DESAIN
+    # Secara default memakai folder lokal di static/.
+    # Di Render, arahkan ke persistent disk lewat env, contoh:
+    #   UPLOAD_FOLDER=/var/data/uploads
+    #   REMOVED_FOLDER=/var/data/removed
+    # =========================
+    UPLOAD_FOLDER = os.getenv(
+        "UPLOAD_FOLDER"
+    ) or "static/uploads"
+
+    REMOVED_FOLDER = os.getenv(
+        "REMOVED_FOLDER"
+    ) or "static/removed"
+
+    # =========================
     # FLASK MAIL
     # =========================
     MAIL_SERVER = "smtp.gmail.com"
@@ -30,17 +45,17 @@ class Config:
 
     MAIL_USE_TLS = True
 
-    # Diisi di file .env. Jika kosong, akan memakai nilai default di bawah.
+    # Diisi di file .env. Tidak ada nilai default agar kredensial
+    # tidak ikut ter-commit ke repository.
     MAIL_USERNAME = os.getenv(
         "MAIL_USERNAME"
-    ) or "raflinurikhwanabdi@gmail.com"
+    ) or ""
 
     MAIL_PASSWORD = os.getenv(
         "MAIL_PASSWORD"
-    ) or "pnje idra ollp pqcd"
+    ) or ""
 
-    # Pengirim email (FROM). Sebelumnya masih placeholder "EMAIL_GMAIL_KAMU"
-    # yang membuat SMTP menolak pengiriman.
+    # Pengirim email (FROM).
     MAIL_DEFAULT_SENDER = MAIL_USERNAME
 
     # =========================

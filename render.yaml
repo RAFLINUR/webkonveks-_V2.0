@@ -1,0 +1,65 @@
+# Blueprint deploy Render untuk Web Konveksi
+# ---------------------------------------------------------------------------
+# Cara pakai:
+#   1. Push repo ini ke GitHub.
+#   2. Di Render: New > Blueprint > pilih repo ini.
+#   3. Isi Environment Variables yang bertanda sync:false (MONGO_URI, dsb)
+#      lewat dashboard Render (nilainya diambil dari file .env kamu).
+#
+# CATATAN PENTING (free tier):
+#   - Plan free TIDAK mendukung Persistent Disk, jadi file desain yang
+#     diupload customer akan HILANG setiap redeploy/restart container.
+#   - Model rembg (u2net) juga akan di-download ulang setiap cold start.
+#   - Jika ingin data desain permanen, upgrade ke plan Starter (berbayar),
+#     lalu isi env UPLOAD_FOLDER, REMOVED_FOLDER, U2NET_HOME di bawah dan
+#     aktifkan blok `disk`.
+# ---------------------------------------------------------------------------
+
+services:
+  - type: web
+    name: webkonveksi
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120
+
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+
+      # Di-generate otomatis oleh Render (jangan pakai default dev)
+      - key: SECRET_KEY
+        generateValue: true
+
+      # Isi manual di dashboard Render (ambil dari .env)
+      - key: MONGO_URI
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: WA_API_VERSION
+        sync: false
+      - key: WA_PHONE_NUMBER_ID
+        sync: false
+      - key: WA_ACCESS_TOKEN
+        sync: false
+      - key: WA_TEMPLATE_NAME
+        sync: false
+      - key: WA_TEMPLATE_LANG
+        sync: false
+      - key: WA_TEMPLATE_PARAMS
+        sync: false
+
+      # --- Aktifkan bagian ini HANYA jika sudah pakai plan berbayar + disk ---
+      # - key: UPLOAD_FOLDER
+      #   value: /var/data/uploads
+      # - key: REMOVED_FOLDER
+      #   value: /var/data/removed
+      # - key: U2NET_HOME
+      #   value: /var/data/.u2net
+
+    # --- Persistent disk (butuh plan Starter ke atas) ---
+    # disk:
+    #   name: data
+    #   mountPath: /var/data
+    #   sizeGB: 1

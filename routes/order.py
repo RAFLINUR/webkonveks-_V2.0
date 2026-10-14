@@ -23,6 +23,9 @@ import os
 # Database
 from models.database import mongo
 
+# Config (folder penyimpanan desain)
+from config import Config
+
 # Mail (pengiriman struk nota)
 from extensions import mail
 
@@ -32,7 +35,7 @@ order_bp = Blueprint(
 )
 
 # Upload Folder
-UPLOAD_FOLDER = "static/uploads"
+UPLOAD_FOLDER = Config.UPLOAD_FOLDER
 
 # Allowed File
 ALLOWED_EXTENSIONS = {
@@ -526,7 +529,7 @@ def order():
 
                         removed_path = os.path.join(
 
-                            "static/removed",
+                            Config.REMOVED_FOLDER,
 
                             removed_filename
 

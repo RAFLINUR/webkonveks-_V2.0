@@ -5,3 +5,4 @@ python-dotenv==1.2.2
 pymongo==4.17.0
 pillow==12.2.0
 rembg==2.0.69
+gunicorn==23.0.0
